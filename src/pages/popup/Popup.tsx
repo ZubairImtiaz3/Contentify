@@ -21,9 +21,15 @@ const Popup = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tabId = tabs[0].id;
 
-       chrome.tabs.sendMessage(tabId, { action: 'startScrolling' }, function (response) {
-         console.log(response);
-       });
+      chrome.tabs.sendMessage(tabId, { action: 'startCrawling' });
+    });
+  };
+
+  const stopCrawling = () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const tabId = tabs[0].id;
+
+      chrome.tabs.sendMessage(tabId, { action: 'stopCrawling' });
     });
   };
 
@@ -51,6 +57,14 @@ const Popup = () => {
               color: theme === 'light' ? '#000' : '#fff',
             }}>
             Start Crawling
+          </button>
+          <button
+            onClick={stopCrawling}
+            style={{
+              backgroundColor: theme === 'light' ? '#fff' : '#000',
+              color: theme === 'light' ? '#000' : '#fff',
+            }}>
+            Stop Crawling
           </button>
         </section>
       </header>
