@@ -21,12 +21,9 @@ const Popup = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tabId = tabs[0].id;
 
-      // Introduce a delay before sending the message
-      setTimeout(() => {
-        chrome.tabs.sendMessage(tabId, { action: 'startScrolling' }, function (response) {
-          console.log(response);
-        });
-      }, 100);
+       chrome.tabs.sendMessage(tabId, { action: 'startScrolling' }, function (response) {
+         console.log(response);
+       });
     });
   };
 

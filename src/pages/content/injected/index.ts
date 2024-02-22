@@ -10,22 +10,26 @@
 import('@pages/content/injected/toggleTheme');
 
 const smoothScrollToBottom = () => {
-  const scrollStep = window.innerHeight / 10;
+  const baseScrollStep = window.innerHeight / 60;
   let scrollCount = 0;
 
-  const scrollInterval = setInterval(() => {
+  const scroll = () => {
     if (scrollCount >= document.body.scrollHeight - window.innerHeight) {
-      clearInterval(scrollInterval);
-    } else {
-      window.scrollTo(0, scrollCount);
-      scrollCount += scrollStep;
+      // Stop scrolling when reaching the bottom
+      return;
     }
-  }, 15);
+
+    const scrollStep = baseScrollStep * (0.8 + Math.random() * 0.4);
+    scrollCount += scrollStep;
+    window.scrollTo(0, Math.min(scrollCount, document.body.scrollHeight - window.innerHeight));
+
+    requestAnimationFrame(scroll);
+  };
+  scroll();
 };
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === 'startScrolling') {
-    // Your code to start scrolling here
     smoothScrollToBottom();
     sendResponse({ message: 'Scrolling started' });
   }
