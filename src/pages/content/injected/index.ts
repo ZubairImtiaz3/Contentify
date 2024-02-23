@@ -7,6 +7,7 @@
  * If you want to use other modules in content scripts, you need to import them via these files.
  *
  */
+
 import('@pages/content/injected/toggleTheme');
 
 let isScrolling = true;
@@ -33,7 +34,6 @@ const smoothScrollToBottom = () => {
 };
 
 const scrapePostText = tags => {
-  console.log('tagssss', tags);
   // All elements with the post text
   const postTextElements = document.querySelectorAll(
     '.feed-shared-update-v2__description .update-components-update-v2__commentary span',
@@ -42,12 +42,12 @@ const scrapePostText = tags => {
   if (postTextElements.length > 0) {
     // Loop through each element and extract the text
     postTextElements.forEach((element, index) => {
-      const postText = element.textContent.trim();
+      const postText = element.textContent.trim().toLowerCase();
 
       // Check if the post has already been scraped
       if (!scrapedPosts.has(postText)) {
         // Check if the post contains at least 2 matching keywords from the tags
-        const matchingKeywords = tags.filter(keyword => postText.includes(keyword));
+        const matchingKeywords = tags.filter(keyword => postText.includes(keyword.toLowerCase()));
         if (matchingKeywords.length >= 2) {
           console.log(`Post Text ${index + 1}:`, postText);
           scrapedPosts.add(postText);
