@@ -33,29 +33,49 @@ const smoothScrollToBottom = () => {
   scroll();
 };
 
-const scrapePostText = tags => {
-  // All elements with the post text
-  const postTextElements = document.querySelectorAll(
-    '.feed-shared-update-v2__description .update-components-update-v2__commentary span',
-  );
+const scrapePost = tags => {
+  // All elements with the post text and user profile link
+  const postElements = document.querySelectorAll('.feed-shared-update-v2');
 
-  if (postTextElements.length > 0) {
-    // Loop through each element and extract the text
-    postTextElements.forEach((element, index) => {
-      const postText = element.textContent.trim().toLowerCase();
+  if (postElements.length > 0) {
+    // Loop through each post element
+    postElements.forEach((postElement, index) => {
+      // Extract post text
+      const postTextElement = postElement.querySelector(
+        '.feed-shared-update-v2__description .update-components-update-v2__commentary span',
+      );
+      if (!postTextElement) {
+        console.error(`Post text element not found for Post ${index + 1}`);
+        return;
+      }
+      const postText = postTextElement.textContent.trim().toLowerCase();
 
       // Check if the post has already been scraped
       if (!scrapedPosts.has(postText)) {
         // Check if the post contains at least 2 matching keywords from the tags
         const matchingKeywords = tags.filter(keyword => postText.includes(keyword.toLowerCase()));
         if (matchingKeywords.length >= 2) {
-          console.log(`Post Text ${index + 1}:`, postText);
+          // Extract user profile link
+          const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
+
+          if (userProfileLinkElement) {
+            const userProfileLink = userProfileLinkElement.getAttribute('href');
+
+            // Extract user name
+            const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
+            const userName = userNameElement ? userNameElement.textContent.trim() : 'Unknown';
+
+            console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
+          } else {
+            console.error(`User profile link not found for Post ${index + 1}`);
+          }
+
           scrapedPosts.add(postText);
         }
       }
     });
   } else {
-    console.error('Post text elements not found');
+    console.error('Post elements not found');
   }
 };
 
@@ -67,7 +87,7 @@ chrome.runtime.onMessage.addListener(function (request) {
 
     // Start scraping post text every 4 seconds
     crawlInterval = setInterval(() => {
-      scrapePostText(tags);
+      scrapePost(tags);
     }, 4000);
   } else if (request.action === 'stopCrawling') {
     clearInterval(crawlInterval);
