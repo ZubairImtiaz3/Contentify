@@ -21,7 +21,7 @@ const Popup = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tabId = tabs[0].id;
 
-      chrome.tabs.sendMessage(tabId, { action: 'startCrawling' });
+      chrome.tabs.sendMessage(tabId, { action: 'startCrawling', tags: tags });
     });
   };
 
