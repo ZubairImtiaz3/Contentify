@@ -48,37 +48,41 @@ const scrapePost = tags => {
       const postTextElement = postElement.querySelector(
         '.feed-shared-update-v2__description .update-components-update-v2__commentary span',
       );
-      if (!postTextElement) {
-        console.error(`Post text element not found for Post ${index + 1}`);
-        return;
-      }
-      const postText = postTextElement.textContent.trim().toLowerCase();
 
-      // Check if the post has already been scraped
-      if (!scrapedPosts.has(postText)) {
-        // Check if the post contains at least 2 matching keywords from the tags
-        const matchingKeywords = tags.filter(keyword => postText.includes(keyword.toLowerCase()));
-        if (matchingKeywords.length >= 2) {
-          // Extract user profile link
-          const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
+      // Check if the post text element is found
+      if (postTextElement) {
+        const postText = postTextElement.textContent.trim().toLowerCase();
 
-          if (userProfileLinkElement) {
-            const userProfileLink = userProfileLinkElement.getAttribute('href');
+        // Check if the post has already been scraped
+        if (!scrapedPosts.has(postText)) {
+          // Check if the post contains at least 2 matching keywords from the tags
+          const matchingKeywords = tags.filter(keyword => postText.includes(keyword.toLowerCase()));
+          if (matchingKeywords.length >= 2) {
+            // Extract user profile link
+            const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
 
-            // Extract user name
-            const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
-            const userName = userNameElement ? userNameElement.textContent.trim() : 'Unknown';
+            // Check if the user profile link element is found
+            if (userProfileLinkElement) {
+              const userProfileLink = userProfileLinkElement.getAttribute('href');
 
-            // Send the data to the popup
-            sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });
+              // Extract user name
+              const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
+              const userName = userNameElement ? userNameElement.textContent.trim() : 'Unknown';
 
-            console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
-          } else {
-            console.error(`User profile link not found for Post ${index + 1}`);
+              // Send the data to the popup
+              sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });
+
+              console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
+            } else {
+              console.error(`User profile link not found for Post ${index + 1}`);
+            }
+
+            // Add the post text to the set of scraped posts
+            scrapedPosts.add(postText);
           }
-
-          scrapedPosts.add(postText);
         }
+      } else {
+        console.error(`Post text element not found for Post ${index + 1}`);
       }
     });
   } else {
