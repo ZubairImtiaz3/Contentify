@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect } from 'react';
 // import logo from '@assets/img/logo.svg';
 import '@pages/popup/Popup.css';
 import useStorage from '@src/shared/hooks/useStorage';
@@ -11,6 +11,7 @@ import 'react-tagsinput/react-tagsinput.css';
 const Popup = () => {
   const theme = useStorage(exampleThemeStorage);
   const [tags, setTags] = useState([]);
+  const [scrapedData, setScrapedData] = useState([]);
 
   const handleTagsChange = newTags => {
     setTags(newTags);
@@ -33,6 +34,15 @@ const Popup = () => {
     });
   };
 
+  useEffect(() => {
+    // Listen for messages from the content script
+    chrome.runtime.onMessage.addListener(message => {
+      if (message.action === 'scrapedData') {
+        setScrapedData(prevData => [...prevData, message.data]);
+      }
+    });
+  }, []);
+
   return (
     <div
       className="App"
@@ -41,6 +51,7 @@ const Popup = () => {
       }}>
       <header className="App-header" style={{ color: theme === 'light' ? '#000' : '#fff' }}>
         <section>
+          <h3>Total Crawled Posts: {scrapedData.length}</h3>
           <button
             style={{
               backgroundColor: theme === 'light' ? '#fff' : '#000',

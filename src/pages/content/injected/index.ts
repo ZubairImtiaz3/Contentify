@@ -33,6 +33,10 @@ const smoothScrollToBottom = () => {
   scroll();
 };
 
+const sendPostsToPopup = postData => {
+  chrome.runtime.sendMessage({ action: 'scrapedData', data: postData });
+};
+
 const scrapePost = tags => {
   // All elements with the post text and user profile link
   const postElements = document.querySelectorAll('.feed-shared-update-v2');
@@ -64,6 +68,9 @@ const scrapePost = tags => {
             // Extract user name
             const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
             const userName = userNameElement ? userNameElement.textContent.trim() : 'Unknown';
+
+            // Send the data to the popup
+            sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });
 
             console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
           } else {
