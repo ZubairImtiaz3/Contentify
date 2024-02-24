@@ -67,7 +67,9 @@ const scrapePost = tags => {
 
               // Extract user name
               const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
-              const userName = userNameElement ? userNameElement.textContent.trim() : 'Unknown';
+             const userName = userNameElement
+               ? userNameElement.querySelector('[aria-hidden="true"]').textContent.trim()
+               : 'Unknown';
 
               // Send the data to the popup
               sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });

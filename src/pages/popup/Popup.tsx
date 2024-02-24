@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Papa from 'papaparse';
 // import logo from '@assets/img/logo.svg';
 import '@pages/popup/Popup.css';
 import useStorage from '@src/shared/hooks/useStorage';
@@ -34,6 +35,23 @@ const Popup = () => {
     });
   };
 
+  const convertToCSV = data => {
+    const csv = Papa.unparse(data);
+    return csv;
+  };
+
+  const downloadCSV = () => {
+    const csvData = convertToCSV(scrapedData);
+
+    // Create a Blob object representing the data as a CSV file
+    const blob = new Blob([csvData], { type: 'text/csv' });
+
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    link.download = 'scrapedData.csv';
+    link.click();
+  };
+
   useEffect(() => {
     // Listen for messages from the content script
     chrome.runtime.onMessage.addListener(message => {
@@ -41,7 +59,9 @@ const Popup = () => {
         setScrapedData(prevData => [...prevData, message.data]);
       }
     });
-  }, []);
+
+    console.log('scrapedData', scrapedData);
+  }, [scrapedData]);
 
   return (
     <div
@@ -77,6 +97,16 @@ const Popup = () => {
             }}>
             Stop Crawling
           </button>
+          {scrapedData.length > 0 && (
+            <button
+              onClick={downloadCSV}
+              style={{
+                backgroundColor: theme === 'light' ? '#fff' : '#000',
+                color: theme === 'light' ? '#000' : '#fff',
+              }}>
+              Download CSV
+            </button>
+          )}
         </section>
       </header>
     </div>
