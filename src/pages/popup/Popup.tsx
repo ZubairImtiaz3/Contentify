@@ -13,17 +13,23 @@ const Popup = () => {
   const theme = useStorage(exampleThemeStorage);
   const [tags, setTags] = useState([]);
   const [scrapedData, setScrapedData] = useState([]);
+  const [requiredTags, setRequiredTags] = useState([]);
 
   const handleTagsChange = newTags => {
     setTags(newTags);
     console.log('Tags:', newTags);
   };
 
+  const handleRequiredTagsChange = newRequiredTags => {
+    setRequiredTags(newRequiredTags);
+    console.log('Required Tags:', newRequiredTags);
+  };
+
   const startCrawling = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tabId = tabs[0].id;
 
-      chrome.tabs.sendMessage(tabId, { action: 'startCrawling', tags: tags });
+      chrome.tabs.sendMessage(tabId, { action: 'startCrawling', tags: tags, requiredTags: requiredTags });
     });
   };
 
@@ -71,7 +77,12 @@ const Popup = () => {
       }}>
       <header className="App-header" style={{ color: theme === 'light' ? '#000' : '#fff' }}>
         <section>
-          <h3>Total Crawled Posts: {scrapedData.length}</h3>
+          <h3
+            style={{
+              margin: '0px',
+            }}>
+            Total Crawled Posts: {scrapedData.length}
+          </h3>
           <button
             style={{
               backgroundColor: theme === 'light' ? '#fff' : '#000',
@@ -80,7 +91,14 @@ const Popup = () => {
             onClick={exampleThemeStorage.toggle}>
             Toggle theme
           </button>
-          <TagsInput value={tags} onChange={handleTagsChange} />
+          <label htmlFor="requiredTags" style={{ color: theme === 'light' ? '#000' : '#fff', fontSize: '14px' }}>
+            Required keywords:
+          </label>
+          <TagsInput id="requiredTags" value={requiredTags} onChange={handleRequiredTagsChange} />
+          <label htmlFor="additionalTags" style={{ color: theme === 'light' ? '#000' : '#fff', fontSize: '14px' }}>
+            Additional keywords:
+          </label>
+          <TagsInput id="additionalTags" value={tags} onChange={handleTagsChange} />
           <button
             onClick={startCrawling}
             style={{
