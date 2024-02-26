@@ -33,12 +33,12 @@ const smoothScrollToBottom = () => {
   scroll();
 };
 
-const sendPostsToPopup = postData => {
-  chrome.runtime.sendMessage({ action: 'scrapedData', data: postData });
+const sendPostsToPopup = scrapedPosts => {
+  const postsArray = Array.from(scrapedPosts).map((jsonString: string) => JSON.parse(jsonString));
+  chrome.runtime.sendMessage({ action: 'scrapedData', data: postsArray });
 };
 
 const scrapePost = (tags, requiredTags) => {
-  // All elements with the post text and user profile link
   const postElements = document.querySelectorAll('.feed-shared-update-v2');
 
   if (postElements.length > 0) {
@@ -52,66 +52,60 @@ const scrapePost = (tags, requiredTags) => {
       // Check if the post text element is found
       if (postTextElement) {
         const postText = postTextElement.textContent.trim().toLowerCase();
+        const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
 
-        // Check if the post has already been scraped
-        if (!scrapedPosts.has(postText)) {
-          // Extract user profile link
-          const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
+        // Check if the user profile link element is found
+        if (userProfileLinkElement) {
+          const userProfileLink = userProfileLinkElement.getAttribute('href');
 
-          // Check if the user profile link element is found
-          if (userProfileLinkElement) {
-            const userProfileLink = userProfileLinkElement.getAttribute('href');
+          // Extract user name
+          const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
+          const userName = userNameElement
+            ? userNameElement.querySelector('[aria-hidden="true"]').textContent.trim()
+            : 'Unknown';
 
-            // Extract user name
-            const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
-            const userName = userNameElement
-              ? userNameElement.querySelector('[aria-hidden="true"]').textContent.trim()
-              : 'Unknown';
+          // Check if all required tags are present and apply logic based on the number of required tags
+          const allRequiredTagsFound = requiredTags.every(tag => postText.includes(tag.toLowerCase()));
+          const allAdditionalTagsFound = tags.filter(tag => postText.includes(tag.toLowerCase()));
 
-            // Check if all required tags are present and apply logic based on the number of required tags
-            const allRequiredTagsFound = requiredTags.every(tag => postText.includes(tag.toLowerCase()));
-            const allAdditionalTagsFound = tags.filter(tag => postText.includes(tag.toLowerCase()));
+          const numberOfRequiredTagsFound = allRequiredTagsFound ? requiredTags.length : 0;
+          const numberOfAdditionalTagsFound = allAdditionalTagsFound.length;
 
-            const numberOfRequiredTagsFound = allRequiredTagsFound ? requiredTags.length : 0;
-            const numberOfAdditionalTagsFound = allAdditionalTagsFound.length;
+          const totalTagsFound = numberOfRequiredTagsFound + numberOfAdditionalTagsFound;
 
-            const totalTagsFound = numberOfRequiredTagsFound + numberOfAdditionalTagsFound;
+          if (
+            (requiredTags.length > 1 && totalTagsFound >= 2) ||
+            (requiredTags.length === 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= 1) ||
+            (requiredTags.length === 0 && allAdditionalTagsFound.length >= 2)
+          ) {
+            const post = {
+              user: userName,
+              post: postText,
+              profileLink: userProfileLink,
+            };
 
-            if (requiredTags.length > 1 && totalTagsFound >= 2) {
-              // Scraping logic for scenarios with more than one required tag
-              sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });
-
-              console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
-
-              // Add the post text to the set of scraped posts
-              scrapedPosts.add(postText);
-            } else if (requiredTags.length === 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= 1) {
-              // Scraping logic for scenarios with only one required tag
-              sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });
-
-              console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
-
-              // Add the post text to the set of scraped posts
-              scrapedPosts.add(postText);
-            } else if (requiredTags.length === 0 && allAdditionalTagsFound.length >= 2) {
-              // Scraping logic for scenarios with no required tags
-              sendPostsToPopup({ user: userName, post: postText, profileLink: userProfileLink });
-
-              console.log(`Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`);
-
-              // Add the post text to the set of scraped posts
-              scrapedPosts.add(postText);
+            if (!scrapedPosts.has(JSON.stringify(post))) {
+              // console.log(
+              //   `Scraped Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`,
+              // );
+              scrapedPosts.add(JSON.stringify(post));
+            } else {
+              console.log(
+                `Duplicate Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`,
+              );
             }
-          } else {
-            console.error(`User profile link not found for Post ${index + 1}`);
           }
+        } else {
+          console.log(`User profile link not found for Post ${index + 1}`);
         }
       } else {
-        console.error(`Post text element not found for Post ${index + 1}`);
+        console.log(`Post text element not found for Post ${index + 1}`);
       }
     });
+
+    sendPostsToPopup(scrapedPosts);
   } else {
-    console.error('Post elements not found');
+    console.log('Post elements not found');
   }
 };
 
@@ -121,7 +115,7 @@ chrome.runtime.onMessage.addListener(function (request) {
     const requiredTags = request.requiredTags;
     scrapedPosts.clear();
     smoothScrollToBottom();
-
+    isScrolling = true;
     // Start scraping post text every 4 seconds
     crawlInterval = setInterval(() => {
       scrapePost(tags, requiredTags);

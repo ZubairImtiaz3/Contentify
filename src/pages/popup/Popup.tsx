@@ -17,12 +17,10 @@ const Popup = () => {
 
   const handleTagsChange = newTags => {
     setTags(newTags);
-    console.log('Tags:', newTags);
   };
 
   const handleRequiredTagsChange = newRequiredTags => {
     setRequiredTags(newRequiredTags);
-    console.log('Required Tags:', newRequiredTags);
   };
 
   const startCrawling = () => {
@@ -59,15 +57,12 @@ const Popup = () => {
   };
 
   useEffect(() => {
-    // Listen for messages from the content script
     chrome.runtime.onMessage.addListener(message => {
       if (message.action === 'scrapedData') {
-        setScrapedData(prevData => [...prevData, message.data]);
+        setScrapedData(message.data);
       }
     });
-
-    console.log('scrapedData', scrapedData);
-  }, [scrapedData]);
+  }, []);
 
   return (
     <div
