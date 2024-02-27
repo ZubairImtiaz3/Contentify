@@ -1,16 +1,12 @@
 import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
-// import logo from '@assets/img/logo.svg';
 import '@pages/popup/Popup.css';
-import useStorage from '@src/shared/hooks/useStorage';
-import exampleThemeStorage from '@src/shared/storages/exampleThemeStorage';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import TagsInput from 'react-tagsinput';
 import 'react-tagsinput/react-tagsinput.css';
 
 const Popup = () => {
-  const theme = useStorage(exampleThemeStorage);
   const [tags, setTags] = useState([]);
   const [scrapedData, setScrapedData] = useState([]);
   const [requiredTags, setRequiredTags] = useState([]);
@@ -39,6 +35,16 @@ const Popup = () => {
     });
   };
 
+  const openNewTab = () => {
+    const newTabUrl = chrome.runtime.getURL('src/pages/newtab/index.html');
+    chrome.windows.create({ url: newTabUrl, state: 'maximized' }, function (window) {
+      setTimeout(() => {
+        chrome.tabs.sendMessage(window.tabs[0].id, { action: 'displayScrapedData', data: scrapedData });
+        console.log('scrapedSend', scrapedData);
+      }, 1000);
+    });
+  };
+
   const convertToCSV = data => {
     const csv = Papa.unparse(data);
     return csv;
@@ -52,7 +58,7 @@ const Popup = () => {
 
     const link = document.createElement('a');
     link.href = window.URL.createObjectURL(blob);
-    link.download = 'scrapedData.csv';
+    link.download = 'Posts.csv';
     link.click();
   };
 
@@ -65,63 +71,27 @@ const Popup = () => {
   }, []);
 
   return (
-    <div
-      className="App"
-      style={{
-        backgroundColor: theme === 'light' ? '#fff' : '#000',
-      }}>
-      <header className="App-header" style={{ color: theme === 'light' ? '#000' : '#fff' }}>
-        <section>
-          <h3
-            style={{
-              margin: '0px',
-            }}>
-            Total Crawled Posts: {scrapedData.length}
-          </h3>
-          <button
-            style={{
-              backgroundColor: theme === 'light' ? '#fff' : '#000',
-              color: theme === 'light' ? '#000' : '#fff',
-            }}
-            onClick={exampleThemeStorage.toggle}>
-            Toggle theme
-          </button>
-          <label htmlFor="requiredTags" style={{ color: theme === 'light' ? '#000' : '#fff', fontSize: '14px' }}>
-            Required keywords:
-          </label>
-          <TagsInput id="requiredTags" value={requiredTags} onChange={handleRequiredTagsChange} />
-          <label htmlFor="additionalTags" style={{ color: theme === 'light' ? '#000' : '#fff', fontSize: '14px' }}>
-            Additional keywords:
-          </label>
-          <TagsInput id="additionalTags" value={tags} onChange={handleTagsChange} />
-          <button
-            onClick={startCrawling}
-            style={{
-              backgroundColor: theme === 'light' ? '#fff' : '#000',
-              color: theme === 'light' ? '#000' : '#fff',
-            }}>
-            Start Crawling
-          </button>
-          <button
-            onClick={stopCrawling}
-            style={{
-              backgroundColor: theme === 'light' ? '#fff' : '#000',
-              color: theme === 'light' ? '#000' : '#fff',
-            }}>
-            Stop Crawling
-          </button>
-          {scrapedData.length > 0 && (
-            <button
-              onClick={downloadCSV}
-              style={{
-                backgroundColor: theme === 'light' ? '#fff' : '#000',
-                color: theme === 'light' ? '#000' : '#fff',
-              }}>
-              Download CSV
-            </button>
-          )}
-        </section>
-      </header>
+    <div className="App">
+      <section>
+        <h1>Feed Opportunity</h1>
+        {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
+
+        <label htmlFor="requiredTags">Required keywords:</label>
+        <TagsInput id="requiredTags" value={requiredTags} onChange={handleRequiredTagsChange} />
+
+        <label htmlFor="additionalTags">Additional keywords:</label>
+        <TagsInput id="additionalTags" value={tags} onChange={handleTagsChange} />
+
+        <button onClick={startCrawling}>Start Crawling</button>
+        <button onClick={stopCrawling}>Stop Crawling</button>
+
+        {scrapedData.length > 0 && (
+          <>
+            <button onClick={openNewTab}>Open in New Window</button>
+            <button onClick={downloadCSV}>Download CSV</button>
+          </>
+        )}
+      </section>
     </div>
   );
 };
