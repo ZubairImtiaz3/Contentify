@@ -5,5 +5,5 @@ export default function App() {
     console.log('content view loaded');
   }, []);
 
-  return <div className=""></div>;
+  return <div className="test" data-testid="test-div"></div>;
 }

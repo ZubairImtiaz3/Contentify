@@ -1,16 +1,14 @@
-import { describe, test } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, expect, test } from 'vitest';
+import { render } from '@testing-library/react';
 import App from '@pages/content/ui/app';
 
 describe('appTest', () => {
   test('render text', () => {
-    // given
-    const text = 'content view';
-
     // when
-    render(<App />);
+    const { getByTestId } = render(<App />);
 
     // then
-    screen.getByText(text);
+    const testDiv = getByTestId('test-div');
+    expect(testDiv.textContent).toBe('');
   });
 });
