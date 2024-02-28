@@ -27,7 +27,7 @@ const Newtab = () => {
   return (
     <div className="App">
       {isLoading ? (
-        <ClipLoader color="#c850c0" />
+        <ClipLoader color="#000" />
       ) : scrapedData.length > 0 ? (
         <>
           <div className="container-table100">

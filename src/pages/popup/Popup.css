@@ -1,39 +1,255 @@
-.App {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  text-align: center;
-  height: 100%;
-  padding: 10px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-section {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+:root {
+  --destructive: 0 84.2% 60.2%;
+  --primary: 240 5.9% 10%;
+  --accent: 240 4.8% 95.9%;
+}
+
+.App {
+  font-family: 'Inter', sans-serif;
+  padding: 1rem;
+  color: hsl(var(--primary));
 }
 
 section h3 {
   margin: 0px;
   font-size: 16px;
+  margin-bottom: 1rem;
+  line-height: 1.25rem;
 }
 
 section label {
-  font-size: 14px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
 }
 
 section h1 {
-  font-size: 22px;
-  margin-bottom: 0px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.btnGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.btn {
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btnStart {
+  color: #fafafa;
+  background-color: hsl(var(--primary));
+}
+
+.btnStop {
+  color: #fafafa;
+  background-color: hsl(var(--destructive) / 0.9);
+}
+
+.react-tagsinput {
+  background-color: #fff;
+  border: 1px solid #e4e4e7;
+  overflow: hidden;
+  padding-left: 5px;
+  padding-top: 5px;
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  border-radius: 6px;
+}
+
+.react-tagsinput--focused {
+  border-color: #777;
+}
+
+.react-tagsinput-tag {
+  background-color: #f4f4f5;
+  border-radius: 999px;
+  border: none;
+  color: hsl(var(--primary));
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  margin-right: 5px;
+  padding: 5px 0.625rem;
+  line-height: 1rem;
+}
+
+.react-tagsinput-remove {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.react-tagsinput-tag a::before {
+  content: ' ×';
+}
+
+.react-tagsinput-input {
+  background: transparent;
+  border: 0;
+  color: #777;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  margin-bottom: 6px;
+  margin-top: 1px;
+  outline: none;
+  padding: 5px;
+  line-height: 1.25rem;
+  border-radius: 6px;
+  width: 100px;
+}
+
+.secondaryBtnGroup {
+  display: flex;
+  justify-content: space-between;
+}
+
+.secondaryBtn {
+  background-color: transparent;
+  border: 1px solid #e4e4e7;
+}
+
+.secondaryBtn:hover {
+  background-color: hsl(var(--accent));
 }

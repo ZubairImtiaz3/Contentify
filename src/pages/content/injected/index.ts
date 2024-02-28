@@ -111,11 +111,12 @@ const scrapePost = (tags, requiredTags) => {
 
 chrome.runtime.onMessage.addListener(function (request) {
   if (request.action === 'startCrawling') {
+    isScrolling = true;
     const tags = request.tags;
     const requiredTags = request.requiredTags;
     scrapedPosts.clear();
     smoothScrollToBottom();
-    isScrolling = true;
+
     // Start scraping post text every 4 seconds
     crawlInterval = setInterval(() => {
       scrapePost(tags, requiredTags);

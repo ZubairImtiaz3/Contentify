@@ -4,12 +4,12 @@ import '@pages/popup/Popup.css';
 import withSuspense from '@src/shared/hoc/withSuspense';
 import withErrorBoundary from '@src/shared/hoc/withErrorBoundary';
 import TagsInput from 'react-tagsinput';
-import 'react-tagsinput/react-tagsinput.css';
 
 const Popup = () => {
   const [tags, setTags] = useState([]);
   const [scrapedData, setScrapedData] = useState([]);
   const [requiredTags, setRequiredTags] = useState([]);
+  const [isCrawling, setIsCrawling] = useState(false);
 
   const handleTagsChange = newTags => {
     setTags(newTags);
@@ -19,19 +19,17 @@ const Popup = () => {
     setRequiredTags(newRequiredTags);
   };
 
-  const startCrawling = () => {
+  const toggleCrawling = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tabId = tabs[0].id;
 
-      chrome.tabs.sendMessage(tabId, { action: 'startCrawling', tags: tags, requiredTags: requiredTags });
-    });
-  };
+      if (isCrawling) {
+        chrome.tabs.sendMessage(tabId, { action: 'stopCrawling' });
+      } else {
+        chrome.tabs.sendMessage(tabId, { action: 'startCrawling', tags, requiredTags });
+      }
 
-  const stopCrawling = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      const tabId = tabs[0].id;
-
-      chrome.tabs.sendMessage(tabId, { action: 'stopCrawling' });
+      setIsCrawling(!isCrawling);
     });
   };
 
@@ -77,20 +75,38 @@ const Popup = () => {
         {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
 
         <label htmlFor="requiredTags">Required keywords:</label>
-        <TagsInput id="requiredTags" value={requiredTags} onChange={handleRequiredTagsChange} />
+        <TagsInput
+          inputProps={{ placeholder: 'Add keywords' }}
+          id="requiredTags"
+          value={requiredTags}
+          onChange={handleRequiredTagsChange}
+        />
 
         <label htmlFor="additionalTags">Additional keywords:</label>
-        <TagsInput id="additionalTags" value={tags} onChange={handleTagsChange} />
+        <TagsInput
+          inputProps={{ placeholder: 'Add keywords' }}
+          id="additionalTags"
+          value={tags}
+          onChange={handleTagsChange}
+        />
 
-        <button onClick={startCrawling}>Start Crawling</button>
-        <button onClick={stopCrawling}>Stop Crawling</button>
-
-        {scrapedData.length > 0 && (
-          <>
-            <button onClick={openNewTab}>Open in New Window</button>
-            <button onClick={downloadCSV}>Download CSV</button>
-          </>
-        )}
+        <div className="btnGroup">
+          <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
+            {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
+          </button>
+          <div className="secondaryBtnGroup">
+            {scrapedData.length > 0 && (
+              <>
+                <button className="btn secondaryBtn" onClick={openNewTab}>
+                  Open in New Window
+                </button>
+                <button className="btn secondaryBtn" onClick={downloadCSV}>
+                  Download CSV
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       </section>
     </div>
   );
