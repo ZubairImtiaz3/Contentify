@@ -139,7 +139,7 @@ table {
 
 section h3 {
   margin: 0px;
-  font-size: 16px;
+  font-size: 1rem;
   margin-bottom: 1rem;
   line-height: 1.25rem;
 }
@@ -260,7 +260,7 @@ section h1 {
 }
 
 #validationError h3 {
-  font-size: 15px;
+  font-size: 0.938rem;
 }
 
 .errorIcon {
@@ -268,4 +268,10 @@ section h1 {
   width: 3.25rem;
   height: 3.25rem;
   margin-bottom: 1rem;
+}
+
+.tagErrorMessage {
+  color: hsl(var(--destructive));
+  text-align: center;
+  font-size: 0.875rem;
 }

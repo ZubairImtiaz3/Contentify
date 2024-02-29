@@ -11,18 +11,26 @@ const Popup = () => {
   const [requiredTags, setRequiredTags] = useState([]);
   const [isCrawling, setIsCrawling] = useState(false);
   const [currentTabUrl, setCurrentTabUrl] = useState('');
+  const [showTagErrorMessage, setShowTagErrorMessage] = useState(false);
 
   const handleTagsChange = newTags => {
     setTags(newTags);
+    setShowTagErrorMessage(false);
   };
 
   const handleRequiredTagsChange = newRequiredTags => {
     setRequiredTags(newRequiredTags);
+    setShowTagErrorMessage(false);
   };
 
   const toggleCrawling = () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       const tabId = tabs[0].id;
+
+      if (tags.length === 0 && requiredTags.length === 0) {
+        setShowTagErrorMessage(true);
+        return;
+      }
 
       if (isCrawling) {
         chrome.tabs.sendMessage(tabId, { action: 'stopCrawling' });
@@ -105,6 +113,8 @@ const Popup = () => {
             />
 
             <div className="btnGroup">
+              {showTagErrorMessage && <p className="tagErrorMessage">Please add tags before starting crawling.</p>}
+
               <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
                 {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
               </button>
