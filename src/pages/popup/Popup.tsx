@@ -113,7 +113,7 @@ const Popup = () => {
             />
 
             <div className="btnGroup">
-              {showTagErrorMessage && <p className="tagErrorMessage">Please add tags before starting crawling.</p>}
+              {showTagErrorMessage && <p className="tagErrorMessage">Please add keywords before starting crawling.</p>}
 
               <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
                 {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
