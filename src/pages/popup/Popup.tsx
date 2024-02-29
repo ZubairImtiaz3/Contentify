@@ -10,6 +10,7 @@ const Popup = () => {
   const [scrapedData, setScrapedData] = useState([]);
   const [requiredTags, setRequiredTags] = useState([]);
   const [isCrawling, setIsCrawling] = useState(false);
+  const [currentTabUrl, setCurrentTabUrl] = useState('');
 
   const handleTagsChange = newTags => {
     setTags(newTags);
@@ -68,46 +69,59 @@ const Popup = () => {
     });
   }, []);
 
+  useEffect(() => {
+    // Get the current tab URL using chrome.tabs.query
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      setCurrentTabUrl(tabs[0].url || '');
+    });
+  }, []);
+
   return (
     <div className="App">
-      <section>
-        <h1>Feed Opportunity</h1>
-        {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
+      {currentTabUrl.startsWith('https://www.linkedin.com/feed/') ? (
+        <section>
+          <h1>Feed Opportunity</h1>
+          {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
 
-        <label htmlFor="requiredTags">Required keywords:</label>
-        <TagsInput
-          inputProps={{ placeholder: 'Add keywords' }}
-          id="requiredTags"
-          value={requiredTags}
-          onChange={handleRequiredTagsChange}
-        />
+          <label htmlFor="requiredTags">Required keywords:</label>
+          <TagsInput
+            inputProps={{ placeholder: 'Add keywords' }}
+            id="requiredTags"
+            value={requiredTags}
+            onChange={handleRequiredTagsChange}
+          />
 
-        <label htmlFor="additionalTags">Additional keywords:</label>
-        <TagsInput
-          inputProps={{ placeholder: 'Add keywords' }}
-          id="additionalTags"
-          value={tags}
-          onChange={handleTagsChange}
-        />
+          <label htmlFor="additionalTags">Additional keywords:</label>
+          <TagsInput
+            inputProps={{ placeholder: 'Add keywords' }}
+            id="additionalTags"
+            value={tags}
+            onChange={handleTagsChange}
+          />
 
-        <div className="btnGroup">
-          <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
-            {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
-          </button>
-          <div className="secondaryBtnGroup">
-            {scrapedData.length > 0 && (
-              <>
-                <button className="btn secondaryBtn" onClick={openNewTab}>
-                  Open in New Window
-                </button>
-                <button className="btn secondaryBtn" onClick={downloadCSV}>
-                  Download CSV
-                </button>
-              </>
-            )}
+          <div className="btnGroup">
+            <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
+              {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
+            </button>
+            <div className="secondaryBtnGroup">
+              {scrapedData.length > 0 && (
+                <>
+                  <button className="btn secondaryBtn" onClick={openNewTab}>
+                    Open in New Window
+                  </button>
+                  <button className="btn secondaryBtn" onClick={downloadCSV}>
+                    Download CSV
+                  </button>
+                </>
+              )}
+            </div>
           </div>
+        </section>
+      ) : (
+        <div>
+          <h3>This extension is designed to work only on LinkedIn.</h3>
         </div>
-      </section>
+      )}
     </div>
   );
 };
