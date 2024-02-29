@@ -181,6 +181,7 @@ section h1 {
 .btnStop {
   color: #fafafa;
   background-color: hsl(var(--destructive) / 0.9);
+  width: 100%;
 }
 
 .react-tagsinput {
@@ -252,4 +253,19 @@ section h1 {
 
 .secondaryBtn:hover {
   background-color: hsl(var(--accent));
+}
+
+#validationError {
+  text-align: center;
+}
+
+#validationError h3 {
+  font-size: 15px;
+}
+
+.errorIcon {
+  color: hsl(var(--destructive));
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 1rem;
 }

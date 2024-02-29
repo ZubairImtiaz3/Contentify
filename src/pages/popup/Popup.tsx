@@ -61,6 +61,10 @@ const Popup = () => {
     link.click();
   };
 
+  const handleCloseClick = () => {
+    window.close(); // Close the popup
+  };
+
   useEffect(() => {
     chrome.runtime.onMessage.addListener(message => {
       if (message.action === 'scrapedData') {
@@ -78,50 +82,74 @@ const Popup = () => {
 
   return (
     <div className="App">
-      {currentTabUrl.startsWith('https://www.linkedin.com/feed/') ? (
-        <section>
-          <h1>Feed Opportunity</h1>
-          {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
+      <section>
+        <h1>Feed Opportunity</h1>
+        {currentTabUrl.startsWith('https://www.linkedin.com/feed/') ? (
+          <>
+            {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
 
-          <label htmlFor="requiredTags">Required keywords:</label>
-          <TagsInput
-            inputProps={{ placeholder: 'Add keywords' }}
-            id="requiredTags"
-            value={requiredTags}
-            onChange={handleRequiredTagsChange}
-          />
+            <label htmlFor="requiredTags">Required keywords:</label>
+            <TagsInput
+              inputProps={{ placeholder: 'Add keywords' }}
+              id="requiredTags"
+              value={requiredTags}
+              onChange={handleRequiredTagsChange}
+            />
 
-          <label htmlFor="additionalTags">Additional keywords:</label>
-          <TagsInput
-            inputProps={{ placeholder: 'Add keywords' }}
-            id="additionalTags"
-            value={tags}
-            onChange={handleTagsChange}
-          />
+            <label htmlFor="additionalTags">Additional keywords:</label>
+            <TagsInput
+              inputProps={{ placeholder: 'Add keywords' }}
+              id="additionalTags"
+              value={tags}
+              onChange={handleTagsChange}
+            />
 
-          <div className="btnGroup">
-            <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
-              {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
-            </button>
-            <div className="secondaryBtnGroup">
-              {scrapedData.length > 0 && (
-                <>
-                  <button className="btn secondaryBtn" onClick={openNewTab}>
-                    Open in New Window
-                  </button>
-                  <button className="btn secondaryBtn" onClick={downloadCSV}>
-                    Download CSV
-                  </button>
-                </>
-              )}
+            <div className="btnGroup">
+              <button className={`btn ${isCrawling ? 'btnStop' : 'btnStart'}`} onClick={toggleCrawling}>
+                {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
+              </button>
+              <div className="secondaryBtnGroup">
+                {scrapedData.length > 0 && (
+                  <>
+                    <button className="btn secondaryBtn" onClick={openNewTab}>
+                      Open in New Window
+                    </button>
+                    <button className="btn secondaryBtn" onClick={downloadCSV}>
+                      Download CSV
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
-      ) : (
-        <div>
-          <h3>This extension is designed to work only on LinkedIn.</h3>
-        </div>
-      )}
+          </>
+        ) : (
+          <>
+            <div id="validationError">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="errorIcon"
+                data-id="5">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" x2="12" y1="8" y2="12"></line>
+                <line x1="12" x2="12.01" y1="16" y2="16"></line>
+              </svg>
+              <h3>This extension is designed to work only on LinkedIn.</h3>
+              <h3>Please visit the LinkedIn feed to use this extension.</h3>
+              <button className="btn btnStop" onClick={handleCloseClick}>
+                Close
+              </button>
+            </div>
+          </>
+        )}
+      </section>
     </div>
   );
 };
