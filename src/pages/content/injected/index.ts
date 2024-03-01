@@ -16,22 +16,48 @@ let crawlInterval;
 
 const smoothScrollToBottom = () => {
   const baseScrollStep = window.innerHeight / 60;
-  let scrollCount = 0;
 
   const scroll = () => {
-    if (scrollCount >= document.body.scrollHeight - window.innerHeight || !isScrolling) {
-      // Stop scrolling when reaching the bottom
+    if (!isScrolling) {
       return;
     }
 
     const scrollStep = baseScrollStep * (0.8 + Math.random() * 0.4);
-    scrollCount += scrollStep;
-    window.scrollTo(0, Math.min(scrollCount, document.body.scrollHeight - window.innerHeight));
+    let scrollPosition = window.scrollY + scrollStep;
 
+    // Check if we are close to the bottom
+    const isCloseToBottom = scrollPosition + window.innerHeight >= document.body.scrollHeight;
+
+    // If close to the bottom, adjust scroll position
+    if (isCloseToBottom) {
+      scrollPosition = document.body.scrollHeight - window.innerHeight - 10;
+    }
+
+    window.scrollTo(0, scrollPosition);
+
+    // Request the next animation frame
     requestAnimationFrame(scroll);
   };
+
+  // Periodically check the scroll position and adjust if close to the bottom
+  const checkScroll = () => {
+    if (isScrolling) {
+      const scrollPosition = window.scrollY;
+      const isCloseToBottom = scrollPosition + window.innerHeight >= document.body.scrollHeight;
+
+      // If close to the bottom, adjust scroll position
+      if (isCloseToBottom) {
+        window.scrollTo(0, document.body.scrollHeight - window.innerHeight - 10);
+      }
+
+      setTimeout(checkScroll, 100);
+    }
+  };
+
   scroll();
+  checkScroll();
 };
+
 
 const sendPostsToPopup = scrapedPosts => {
   const postsArray = Array.from(scrapedPosts).map((jsonString: string) => JSON.parse(jsonString));

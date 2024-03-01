@@ -134,7 +134,8 @@ tbody tr {
 }
 
 .column3 {
-    /* width: 245px; */
+    max-width: 245px;
+    word-wrap: break-word;
     padding: 20px;
 }
 
