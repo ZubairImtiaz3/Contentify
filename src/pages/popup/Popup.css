@@ -1,140 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-  display: block;
-}
-body {
-  line-height: 1;
-}
-ol,
-ul {
-  list-style: none;
-}
-blockquote,
-q {
-  quotes: none;
-}
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-
 :root {
-  --destructive: 0 84.2% 60.2%;
-  --primary: 240 5.9% 10%;
-  --accent: 240 4.8% 95.9%;
+  --gradient: linear-gradient(to top left,#72C6EF,#004E8F);
+  
+
+  --primary: 212 80% 69%;
+  --primary-foreground: 212 8% 6.8999999999999995%;
+
+  --muted: 212 40% 20.7%;
+  --muted-foreground: 212 8% 56.9%;
+  
+  --accent: 212 40% 20.7%;
+  --accent-foreground: 212 8% 98.45%;
+
+  --background: 212 52% 5.52%;
+  --foreground: 212 8% 98.45%;
+
+  --input: 212 40% 20.7%;
+  --border: 212 40% 20.7%;
+
+  --ring: 212 80% 69%;
+
+  --card: 212 49% 8.969999999999999%;
+  --card-foreground: 212 8% 98.45%;
 }
 
 .App {
   font-family: 'Inter', sans-serif;
   padding: 1rem;
-  color: hsl(var(--primary));
+}
+
+.App section {
+  color: hsl(var(--card-foreground));
+  background-color: hsl(var(--card));
+  border-radius: 6px;
+  padding: 1rem;
+  border: 1px solid hsl(var(--border));
 }
 
 section h3 {
@@ -150,11 +49,16 @@ section label {
   line-height: 1.25rem;
 }
 
-section h1 {
+.App h1 {
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  color: transparent;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: cover;
 }
 
 .btnGroup {
@@ -164,6 +68,8 @@ section h1 {
 }
 
 .btn {
+  color: hsl(var(--primary-foreground));
+  background-color: hsl(var(--primary));
   font-weight: 500;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -173,20 +79,13 @@ section h1 {
   cursor: pointer;
 }
 
-.btnStart {
-  color: #fafafa;
-  background-color: hsl(var(--primary));
-}
-
-.btnStop {
-  color: #fafafa;
-  background-color: hsl(var(--destructive) / 0.9);
+.btnClose {
   width: 100%;
 }
 
 .react-tagsinput {
-  background-color: #fff;
-  border: 1px solid #e4e4e7;
+  background-color: hsl(var(--background));
+  border: 1px solid hsl(var(--input));;
   overflow: hidden;
   padding-left: 5px;
   padding-top: 5px;
@@ -198,18 +97,18 @@ section h1 {
 }
 
 .react-tagsinput--focused {
-  border-color: #777;
+  border-color: hsl(var(--ring));
 }
 
 .react-tagsinput-tag {
-  background-color: #f4f4f5;
+  background-color: hsl(var(--muted));
   border-radius: 999px;
   border: none;
-  color: hsl(var(--primary));
+  color: hsl(var(--card-foreground));
   display: inline-block;
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   margin-bottom: 5px;
   margin-right: 5px;
   padding: 5px 0.625rem;
@@ -228,7 +127,7 @@ section h1 {
 .react-tagsinput-input {
   background: transparent;
   border: 0;
-  color: #777;
+  color: hsl(var(--foreground));
   font-family: 'Inter', sans-serif;
   font-size: 0.875rem;
   font-weight: 400;
@@ -241,6 +140,11 @@ section h1 {
   width: 100px;
 }
 
+.react-tagsinput-input::placeholder {
+  color: hsl(var(--muted-foreground));
+  font-size: .875rem;
+}
+
 .secondaryBtnGroup {
   display: flex;
   justify-content: space-between;
@@ -248,7 +152,8 @@ section h1 {
 
 .secondaryBtn {
   background-color: transparent;
-  border: 1px solid #e4e4e7;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
 }
 
 .secondaryBtn:hover {
@@ -264,14 +169,14 @@ section h1 {
 }
 
 .errorIcon {
-  color: hsl(var(--destructive));
+  color: hsl(var(--primary));
   width: 3.25rem;
   height: 3.25rem;
   margin-bottom: 1rem;
 }
 
 .tagErrorMessage {
-  color: hsl(var(--destructive));
+  color: hsl(var(--muted-foreground));
   text-align: center;
   font-size: 0.875rem;
 }
