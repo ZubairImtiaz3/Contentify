@@ -33,7 +33,7 @@ const manifest = {
   },
   content_scripts: [
     {
-      matches: ['https://www.linkedin.com/feed/*'],
+      matches: ['https://www.linkedin.com/*'],
       js: ['src/pages/contentInjected/index.js'],
       // KEY for cache invalidation
       css: ['assets/css/contentStyle<KEY>.chunk.css'],

@@ -92,7 +92,7 @@ const Popup = () => {
     <div className="App">
       <section>
         <h1>Feed Opportunity</h1>
-        {currentTabUrl.startsWith('https://www.linkedin.com/feed/') ? (
+        {currentTabUrl.startsWith('https://www.linkedin.com/') ? (
           <>
             {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
 
