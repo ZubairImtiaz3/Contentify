@@ -94,7 +94,7 @@ const Popup = () => {
       <section>
         {currentTabUrl.startsWith('https://www.linkedin.com/') ? (
           <>
-            {scrapedData.length > 0 && <h3>Total Crawled Posts: {scrapedData.length}</h3>}
+            {scrapedData.length === 0 && <h3>Total Posts Found: {scrapedData.length}</h3>}
 
             <label htmlFor="requiredTags">Required keywords:</label>
             <TagsInput
@@ -113,10 +113,10 @@ const Popup = () => {
             />
 
             <div className="btnGroup">
-              {showTagErrorMessage && <p className="tagErrorMessage">Please add keywords before starting crawling.</p>}
+              {showTagErrorMessage && <p className="tagErrorMessage">Please add keywords before starting.</p>}
 
               <button className="btn" onClick={toggleCrawling}>
-                {isCrawling ? 'Stop Crawling' : 'Start Crawling'}
+                {isCrawling ? 'Stop Search' : 'Start Search'}
               </button>
               <div className="secondaryBtnGroup">
                 {scrapedData.length > 0 && (
