@@ -94,7 +94,7 @@ const Popup = () => {
       <section>
         {currentTabUrl.startsWith('https://www.linkedin.com/') ? (
           <>
-            {scrapedData.length === 0 && <h3>Total Posts Found: {scrapedData.length}</h3>}
+            {scrapedData.length > 0 && <h3>Total Posts Found: {scrapedData.length}</h3>}
 
             <label htmlFor="requiredTags">Required keywords:</label>
             <TagsInput
