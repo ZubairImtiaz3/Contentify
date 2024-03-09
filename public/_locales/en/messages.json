@@ -1,8 +1,8 @@
 {
   "extensionDescription": {
-    "description": "A Chrome extension that effortlessly automates Linkedin scrolling and scrapes posts/content based on your keywords."
+    "message": "A Chrome extension that effortlessly automates Linkedin scrolling and scrapes posts/content based on your keywords."
   },
   "extensionName": {
-    "description": "Contentify"
+    "message": "Contentify"
   }
 }
