@@ -90,7 +90,7 @@ const Popup = () => {
 
   return (
     <div className="App">
-      <h1>Feed Opportunity</h1>
+      <h1>Contentify</h1>
       <section>
         {currentTabUrl.startsWith('https://www.linkedin.com/') ? (
           <>

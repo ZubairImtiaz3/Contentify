@@ -1,11 +1,11 @@
 {
-  "name": "chrome-extension-boilerplate-react-vite",
+  "name": "contentify",
   "version": "0.0.1",
-  "description": "chrome extension boilerplate",
+  "description": "A Chrome extension that effortlessly automates Linkedin scrolling and scrapes posts/content based on your keywords.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite.git"
+    "url": "https://github.com/ZubairImtiaz3/Contentify"
   },
   "scripts": {
     "build": "tsc --noEmit && vite build",

@@ -1,10 +1,8 @@
 {
   "extensionDescription": {
-    "description": "Extension description",
-    "message": "Chrome extension boilerplate developed with Vite, React and Typescript"
+    "description": "A Chrome extension that effortlessly automates Linkedin scrolling and scrapes posts/content based on your keywords."
   },
   "extensionName": {
-    "description": "Extension name",
-    "message": "Chrome extension boilerplate"
+    "description": "Contentify"
   }
 }
