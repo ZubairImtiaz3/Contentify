@@ -50,3 +50,6 @@ A Chrome extension built with React and TypeScript, only for LinkedIn! It helps 
 ### Post Table <a name="post table"></a>
 
 <img width="800" alt="popup" src="public/table.png">
+
+## Acknowledgments <a name="Acknowledgments"></a>
+This Chrome Extension is built upon the foundation of the [chrome-extension-boilerplate-react-vite](https://github.com/Jonghakseo/chrome-extension-boilerplate-react-vite)
