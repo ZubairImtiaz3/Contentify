@@ -102,7 +102,8 @@ const scrapePost = (tags, requiredTags) => {
           if (
             (requiredTags.length > 1 && totalTagsFound >= 2) ||
             (requiredTags.length === 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= 1) ||
-            (requiredTags.length === 0 && allAdditionalTagsFound.length >= 2)
+            (requiredTags.length === 0 && allAdditionalTagsFound.length >= 2) ||
+            (requiredTags.length > 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= requiredTags.length)
           ) {
             const post = {
               user: userName,
