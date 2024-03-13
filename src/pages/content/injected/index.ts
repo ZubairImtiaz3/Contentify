@@ -65,75 +65,70 @@ const sendPostsToPopup = scrapedPosts => {
 };
 
 const scrapePost = (tags, requiredTags) => {
-  const postElements = document.querySelectorAll('.feed-shared-update-v2');
 
-  if (postElements.length > 0) {
-    // Loop through each post element
-    postElements.forEach((postElement, index) => {
-      // Extract post text
-      const postTextElement = postElement.querySelector(
-        '.feed-shared-update-v2__description .update-components-update-v2__commentary span',
-      );
+const postElements = document.querySelectorAll('.feed-shared-update-v2');
 
-      // Check if the post text element is found
-      if (postTextElement) {
-        const postText = postTextElement.textContent.trim().toLowerCase();
-        const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
+if (postElements.length > 0) {
+  // Loop through each post element
+  postElements.forEach((postElement, index) => {
+    // Extract post text
+    const postTextElement = postElement.querySelector(
+      '.feed-shared-update-v2__description .update-components-update-v2__commentary span',
+    );
 
-        // Check if the user profile link element is found
-        if (userProfileLinkElement) {
-          const userProfileLink = userProfileLinkElement.getAttribute('href');
+    // Check if the post text element is found
+    if (postTextElement) {
+      const postText = postTextElement.textContent.trim().toLowerCase();
+      const userProfileLinkElement = postElement.querySelector('.update-components-actor__meta-link');
 
-          // Extract user name
-          const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
-          const userName = userNameElement
-            ? userNameElement.querySelector('[aria-hidden="true"]').textContent.trim()
-            : 'Unknown';
+      // Check if the user profile link element is found
+      if (userProfileLinkElement) {
+        const userProfileLink = userProfileLinkElement.getAttribute('href');
 
-          // Check if all required tags are present and apply logic based on the number of required tags
-          const allRequiredTagsFound = requiredTags.every(tag => postText.includes(tag.toLowerCase()));
-          const allAdditionalTagsFound = tags.filter(tag => postText.includes(tag.toLowerCase()));
+        // Extract user name
+        const userNameElement = userProfileLinkElement.querySelector('.update-components-actor__name');
+        const userName = userNameElement
+          ? userNameElement.querySelector('[aria-hidden="true"]').textContent.trim()
+          : 'Unknown';
 
-          const numberOfRequiredTagsFound = allRequiredTagsFound ? requiredTags.length : 0;
-          const numberOfAdditionalTagsFound = allAdditionalTagsFound.length;
+        // Check if all required tags are present and apply logic based on the number of required tags
+        const allRequiredTagsFound = requiredTags.every(tag => postText.includes(tag.toLowerCase()));
+        const allAdditionalTagsFound = tags.filter(tag => postText.includes(tag.toLowerCase()));
 
-          const totalTagsFound = numberOfRequiredTagsFound + numberOfAdditionalTagsFound;
+        if (
+          (requiredTags.length > 1 && allRequiredTagsFound) ||
+          (requiredTags.length === 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= 1) ||
+          (requiredTags.length === 0 && allAdditionalTagsFound.length >= 2)
+        ) {
+          const post = {
+            user: userName,
+            post: postText,
+            profileLink: userProfileLink,
+          };
 
-          if (
-            (requiredTags.length > 1 && totalTagsFound >= 2) ||
-            (requiredTags.length === 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= 1) ||
-            (requiredTags.length === 0 && allAdditionalTagsFound.length >= 2) ||
-            (requiredTags.length > 1 && allRequiredTagsFound && allAdditionalTagsFound.length >= requiredTags.length)
-          ) {
-            const post = {
-              user: userName,
-              post: postText,
-              profileLink: userProfileLink,
-            };
-
-            if (!scrapedPosts.has(JSON.stringify(post))) {
-              // console.log(
-              //   `Scraped Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`,
-              // );
-              scrapedPosts.add(JSON.stringify(post));
-            } else {
-              console.log(
-                `Duplicate Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`,
-              );
-            }
+          if (!scrapedPosts.has(JSON.stringify(post))) {
+            // console.log(
+            //   `Scraped Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`,
+            // );
+            scrapedPosts.add(JSON.stringify(post));
+          } else {
+            console.log(
+              `Duplicate Post ${index + 1} - User: ${userName}, Post: ${postText}, Profile Link: ${userProfileLink}`,
+            );
           }
-        } else {
-          console.log(`User profile link not found for Post ${index + 1}`);
         }
       } else {
-        console.log(`Post text element not found for Post ${index + 1}`);
+        console.log(`User profile link not found for Post ${index + 1}`);
       }
-    });
+    } else {
+      console.log(`Post text element not found for Post ${index + 1}`);
+    }
+  });
 
-    sendPostsToPopup(scrapedPosts);
-  } else {
-    console.log('Post elements not found');
-  }
+  sendPostsToPopup(scrapedPosts);
+} else {
+  console.log('Post elements not found');
+}
 };
 
 chrome.runtime.onMessage.addListener(function (request) {
