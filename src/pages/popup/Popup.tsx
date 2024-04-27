@@ -12,15 +12,22 @@ const Popup = () => {
   const [isCrawling, setIsCrawling] = useState(false);
   const [currentTabUrl, setCurrentTabUrl] = useState('');
   const [showTagErrorMessage, setShowTagErrorMessage] = useState(false);
+  const [rememberKeywords, setRememberKeywords] = useState(false);
 
   const handleTagsChange = newTags => {
     setTags(newTags);
     setShowTagErrorMessage(false);
+    if (rememberKeywords) {
+      chrome.storage.sync.set({ rememberedTags: newTags, rememberedRequiredTags: requiredTags });
+    }
   };
 
   const handleRequiredTagsChange = newRequiredTags => {
     setRequiredTags(newRequiredTags);
     setShowTagErrorMessage(false);
+    if (rememberKeywords) {
+      chrome.storage.sync.set({ rememberedTags: tags, rememberedRequiredTags: newRequiredTags });
+    }
   };
 
   const toggleCrawling = () => {
@@ -74,6 +81,26 @@ const Popup = () => {
   };
 
   useEffect(() => {
+    // Retrieve remembered keywords from Chrome storage when the component mounts
+    chrome.storage.sync.get(['rememberedTags', 'rememberedRequiredTags'], data => {
+      if (data.rememberedTags && data.rememberedRequiredTags) {
+        setTags(data.rememberedTags);
+        setRequiredTags(data.rememberedRequiredTags);
+        setRememberKeywords(true);
+      }
+    });
+  }, []);
+
+  // Save or remove remembered keywords based on the state of the checkbox
+  useEffect(() => {
+    if (rememberKeywords) {
+      chrome.storage.sync.set({ rememberedTags: tags, rememberedRequiredTags: requiredTags });
+    } else {
+      chrome.storage.sync.remove(['rememberedTags', 'rememberedRequiredTags']);
+    }
+  }, [rememberKeywords, tags, requiredTags]);
+
+  useEffect(() => {
     chrome.runtime.onMessage.addListener(message => {
       if (message.action === 'scrapedData') {
         setScrapedData(message.data);
@@ -111,6 +138,17 @@ const Popup = () => {
               value={tags}
               onChange={handleTagsChange}
             />
+
+            <div id="keysCheckBox">
+              <input
+                type="checkbox"
+                name="RememberKeys"
+                id="rememberKeys"
+                checked={rememberKeywords}
+                onChange={() => setRememberKeywords(!rememberKeywords)}
+              />
+              <label htmlFor="rememberKeys">Remember Keywords</label>
+            </div>
 
             <div className="btnGroup">
               {showTagErrorMessage && <p className="tagErrorMessage">Please add keywords before starting.</p>}

@@ -180,3 +180,9 @@ section label {
   text-align: center;
   font-size: 0.875rem;
 }
+
+#keysCheckBox {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
