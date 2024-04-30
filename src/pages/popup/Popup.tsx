@@ -190,7 +190,7 @@ const Popup = () => {
                 <line x1="12" x2="12.01" y1="16" y2="16"></line>
               </svg>
               <h3>This extension is designed to work only on LinkedIn.</h3>
-              <h3>Please visit the LinkedIn feed to use this extension.</h3>
+              <h3>Please visit the LinkedIn site to use this extension.</h3>
               <button className="btn btnClose" onClick={handleCloseClick}>
                 Close
               </button>

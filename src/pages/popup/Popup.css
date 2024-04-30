@@ -1,13 +1,12 @@
 :root {
-  --gradient: linear-gradient(to top left,#72C6EF,#004E8F);
-  
+  --gradient: linear-gradient(to top left, #72c6ef, #004e8f);
 
   --primary: 212 80% 69%;
   --primary-foreground: 212 8% 6.8999999999999995%;
 
   --muted: 212 40% 20.7%;
   --muted-foreground: 212 8% 56.9%;
-  
+
   --accent: 212 40% 20.7%;
   --accent-foreground: 212 8% 98.45%;
 
@@ -85,7 +84,7 @@ section label {
 
 .react-tagsinput {
   background-color: hsl(var(--background));
-  border: 1px solid hsl(var(--input));;
+  border: 1px solid hsl(var(--input));
   overflow: hidden;
   padding-left: 5px;
   padding-top: 5px;
@@ -142,7 +141,7 @@ section label {
 
 .react-tagsinput-input::placeholder {
   color: hsl(var(--muted-foreground));
-  font-size: .875rem;
+  font-size: 0.875rem;
 }
 
 .secondaryBtnGroup {
@@ -185,4 +184,12 @@ section label {
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
+}
+
+input[type=checkbox] {
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 0.125rem;
+  border-width: 1px;
+  accent-color: hsl(var(--accent));
 }
